@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
@@ -10,6 +11,11 @@ app.get('/', (req, res) => {
 })
 let users =[]
 let id = 0
+let getUserbyID = (req) => {
+    const id = req.params.id
+    const user = users.find(u => u.id == id)
+    return user
+}
 app.post('/users', (req, res) => {
     //res.json({ message: 'Welcome to our application.' })
     const user = req.body
@@ -22,8 +28,7 @@ app.get('/users', (req, res) => {
     res.json(users)
 })
 app.get('/users/:id', (req, res) => {
-    const id = req.params.id
-    const user = users.find(u => u.id == id)
+    const user = getUserbyID(req)
     if(user){
         res.json(user)
     }else{
@@ -32,10 +37,9 @@ app.get('/users/:id', (req, res) => {
 
 })
 app.put('/users/:id', (req, res) => {
-    const id = req.params.id
-    const user = users.find(u => u.id == id)
+    const user = getUserbyID(req)
     if(user){
-        user.name = "Hakim"
+        user.fname = "Hakim"
         res.json(user)
     }else{
         res.status(404).json({message: 'User not found'})
@@ -52,7 +56,7 @@ app.delete('/users/:id', (req, res) => {
     }
 })
 
-const port = 5000
+const port = process.env.PORT
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`)
 })
